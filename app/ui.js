@@ -17,6 +17,7 @@ import keysyms from "../core/input/keysymdef.js";
 import Keyboard from "../core/input/keyboard.js";
 import RFB from "../core/rfb.js";
 import * as WebUtil from "./webutil.js";
+import { textAreaToClientClipboard } from './custom.js';
 
 const PAGE_TITLE = "noVNC";
 
@@ -973,14 +974,24 @@ const UI = {
     clipboardReceive(e) {
         Log.Debug(">> UI.clipboardReceive: " + e.detail.text.substr(0, 40) + "...");
         document.getElementById('noVNC_clipboard_text').value = e.detail.text;
+        textAreaToClientClipboard(e.detail.text);
         Log.Debug("<< UI.clipboardReceive");
     },
 
     clipboardSend() {
-        const text = document.getElementById('noVNC_clipboard_text').value;
-        Log.Debug(">> UI.clipboardSend: " + text.substr(0, 40) + "...");
-        UI.rfb.clipboardPasteFrom(text);
-        Log.Debug("<< UI.clipboardSend");
+        navigator.clipboard.readText().then(
+            function(clipboardText) {
+                Log.Debug(">> UI.clipboardSend: " + clipboardText.substr(0, 40) + "...");
+                document.getElementById('noVNC_clipboard_text').value = clipboardText
+                if(UI.rfb){
+                    UI.rfb.clipboardPasteFrom(clipboardText);
+                }
+                Log.Debug("<< UI.clipboardSend");
+            },
+            function(err) {
+                console.error('Unable to read from clipboard: ', err);
+            }
+        );
     },
 
 /* ------^-------
