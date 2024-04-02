@@ -171,7 +171,7 @@ const UI = {
         }
 
         /* Populate the controls if defaults are provided in the URL */
-        UI.initSetting('host', window.location.hostname);
+        UI.initSetting('host', window.location.href);
         UI.initSetting('port', port);
         UI.initSetting('encrypt', (window.location.protocol === "https:"));
         UI.initSetting('view_clip', false);
