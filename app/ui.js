@@ -170,8 +170,12 @@ const UI = {
             }
         }
 
+        let hostname = window.location.hostname;
+        let path = window.location.href;
+        path = path.substring((path.lastIndexOf(hostname) + hostname.length), path.lastIndexOf('/'));
+
         /* Populate the controls if defaults are provided in the URL */
-        UI.initSetting('host', window.location.href);
+        UI.initSetting('host', window.location.hostname);
         UI.initSetting('port', port);
         UI.initSetting('encrypt', (window.location.protocol === "https:"));
         UI.initSetting('view_clip', false);
@@ -181,7 +185,7 @@ const UI = {
         UI.initSetting('shared', true);
         UI.initSetting('view_only', false);
         UI.initSetting('show_dot', false);
-        UI.initSetting('path', 'websockify');
+        UI.initSetting('path', path + '/websockify');
         UI.initSetting('repeaterID', '');
         UI.initSetting('reconnect', false);
         UI.initSetting('reconnect_delay', 5000);
