@@ -19,7 +19,7 @@ import RFB from "../core/rfb.js";
 import * as WebUtil from "./webutil.js";
 import { textAreaToClientClipboard } from './custom.js';
 
-const PAGE_TITLE = "noVNC";
+const PAGE_TITLE = "InfinityVNC";
 
 const UI = {
 
