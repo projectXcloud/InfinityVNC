@@ -983,19 +983,23 @@ const UI = {
     },
 
     clipboardSend() {
-        navigator.clipboard.readText().then(
-            function(clipboardText) {
-                Log.Debug(">> UI.clipboardSend: " + clipboardText.substr(0, 40) + "...");
-                document.getElementById('noVNC_clipboard_text').value = clipboardText
-                if(UI.rfb){
-                    UI.rfb.clipboardPasteFrom(clipboardText);
+        if (typeof navigator.clipboard.readText === "function") {
+            navigator.clipboard.readText().then(
+                function(clipboardText) {
+                    Log.Debug(">> UI.clipboardSend: " + clipboardText.substr(0, 40) + "...");
+                    document.getElementById('noVNC_clipboard_text').value = clipboardText
+                    if(UI.rfb){
+                        UI.rfb.clipboardPasteFrom(clipboardText);
+                    }
+                    Log.Debug("<< UI.clipboardSend");
+                },
+                function(err) {
+                    console.error('Unable to read from clipboard: ', err);
                 }
-                Log.Debug("<< UI.clipboardSend");
-            },
-            function(err) {
-                console.error('Unable to read from clipboard: ', err);
-            }
-        );
+            );
+        } else {
+            console.log('Clipboard Read API not available');
+        }
     },
 
 /* ------^-------
