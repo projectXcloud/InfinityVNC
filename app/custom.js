@@ -25,6 +25,14 @@ document.addEventListener("focus", function () {
   }
 });
 
+document.addEventListener("click", function firstClickHandler() {
+  // Code to run when the user clicks on the document for the first time
+  var mediaElement = document.getElementById('audioPlayer'); 
+  mediaElement.play();
+  // Remove the event listener after the first click
+  document.removeEventListener("click", firstClickHandler);
+});
+
 // WebRTC audio implementation
 
 var ws = new WebSocket(`ws://${window.location.hostname}:6080/ws`);
