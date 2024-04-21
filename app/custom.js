@@ -19,8 +19,8 @@ export function textAreaToClientClipboard(text) {
 }
 
 // This function writes host clipboard & noVNC textarea from client clipboard every second
-setInterval(() => {
+document.addEventListener("focus", function () {
   if (UI) {
     UI.clipboardSend();
   }
-}, 1000);
+});
