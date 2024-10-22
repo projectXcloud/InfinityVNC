@@ -8,6 +8,7 @@ let hostname = window.location.hostname;
 let port = window.location.port;
 let path = window.location.href;
 let baseUrl = `${protocol}//${hostname}`;
+let secure = false;
 
 // if port == 80 (or 443) then it won't be present and should be
 // set manually
@@ -15,8 +16,10 @@ if (!port) {
     try {
         if (protocol.substring(0, 5) == 'https') {
             port = 443;
+            secure = true;
         } else if (protocol.substring(0, 4) == 'http') {
             port = 80;
+            secure = false;
         }
     } catch (e) {
         // Protocol was neither http nor https, so we assume the default
@@ -48,7 +51,9 @@ async function tryPlay(mediaElement) {
     }
 }
 
-var ws = new WebSocket(`ws://${hostname}:${port}/${path}/wrtc`);
+let wsProtocol = secure ? 'wss' : 'ws';
+
+var ws = new WebSocket(`${wsProtocol}://${hostname}:${port}/${path}/wrtc`);
 var peerConnection = new RTCPeerConnection({
     iceTransportPolicy: "relay",
     iceServers: [
