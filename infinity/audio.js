@@ -8,23 +8,11 @@ let hostname = window.location.hostname;
 let port = window.location.port;
 let path = window.location.href;
 let baseUrl = `${protocol}//${hostname}`;
-let secure = false;
+let secure = protocol === 'https:';
 
-// if port == 80 (or 443) then it won't be present and should be
-// set manually
+// if port == 80 (or 443) then it won't be present and should be set manually
 if (!port) {
-    try {
-        if (protocol.substring(0, 5) == 'https') {
-            port = 443;
-            secure = true;
-        } else if (protocol.substring(0, 4) == 'http') {
-            port = 80;
-            secure = false;
-        }
-    } catch (e) {
-        // Protocol was neither http nor https, so we assume the default
-        port = 80;
-    }
+    port = secure ? 443 : 80;
 } else {
     baseUrl += `:${port}`;
 }
