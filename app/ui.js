@@ -19,7 +19,7 @@ import keysyms from "../core/input/keysymdef.js";
 import Keyboard from "../core/input/keyboard.js";
 import RFB from "../core/rfb.js";
 import * as WebUtil from "./webutil.js";
-import { textAreaToClientClipboard } from './custom.js';
+import { textAreaToClientClipboard } from '../infinity/clipboard.js';
 
 const PAGE_TITLE = "InfinityVNC";
 
