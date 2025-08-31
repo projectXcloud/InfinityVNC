@@ -1,5 +1,5 @@
 /*
- * noVNC Audio
+ * Bi-directional Clipboard Management
  * Copyright (C) 2024 ProjectX
  */
 

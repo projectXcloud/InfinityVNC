@@ -36,6 +36,7 @@ import TightDecoder from "./decoders/tight.js";
 import TightPNGDecoder from "./decoders/tightpng.js";
 import ZRLEDecoder from "./decoders/zrle.js";
 import JPEGDecoder from "./decoders/jpeg.js";
+import { pxResize } from '../infinity/resizer.js';
 
 // How many seconds to wait for a disconnect to finish
 const DISCONNECT_TIMEOUT = 3;
@@ -796,9 +797,10 @@ export default class RFB extends EventTargetMixin {
 
         const size = this._screenSize();
 
-        RFB.messages.setDesktopSize(this._sock,
-                                    Math.floor(size.w), Math.floor(size.h),
-                                    this._screenID, this._screenFlags);
+        // RFB.messages.setDesktopSize(this._sock,
+        //                             Math.floor(size.w), Math.floor(size.h),
+        //                             this._screenID, this._screenFlags);
+        pxResize(Math.floor(size.w), Math.floor(size.h));
 
         Log.Debug('Requested new desktop size: ' +
                    size.w + 'x' + size.h);

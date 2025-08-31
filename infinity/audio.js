@@ -1,5 +1,5 @@
 /*
- * noVNC Audio
+ * Audio Redirect to Client
  * Copyright (C) 2024 ProjectX
  */
 
