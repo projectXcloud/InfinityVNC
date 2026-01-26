@@ -3,7 +3,7 @@
  * Copyright (C) 2024 ProjectX
  */
 
-import iceServers from "./iceServers.json";
+import iceServers from "./iceServers.js";
 
 let protocol = window.location.protocol;
 let hostname = window.location.hostname;
