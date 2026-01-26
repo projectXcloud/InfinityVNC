@@ -3,6 +3,8 @@
  * Copyright (C) 2024 ProjectX
  */
 
+import iceServers from "./iceServers.json";
+
 let protocol = window.location.protocol;
 let hostname = window.location.hostname;
 let port = window.location.port;
@@ -45,10 +47,9 @@ var peerConnection = new RTCPeerConnection({
     iceTransportPolicy: "relay",
     iceServers: [
         {
-            urls: "turn:turn.testing.projectx.cloud",
-            username: "test",
-            credential: "test",
+            urls: "stun:stun.l.google.com:19302",
         },
+        ...iceServers,
     ],
 });
 
