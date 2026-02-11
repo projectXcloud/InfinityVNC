@@ -25,11 +25,45 @@ if (path === baseUrl || path === `${baseUrl}/`) {
 }
 
 let wsProtocol = secure ? "wss" : "ws";
+const wsUrl = `${wsProtocol}://${hostname}:${port}/${path}/resize`;
 
-let ws = new WebSocket(`${wsProtocol}://${hostname}:${port}/${path}/resize`);
+let ws = null;
+let reconnectTimer = null;
+let pendingResize = null;
+
+function connect() {
+  ws = new WebSocket(wsUrl);
+  ws.onopen = () => {
+    if (pendingResize) {
+      ws.send(JSON.stringify(pendingResize));
+      pendingResize = null;
+    }
+  };
+  ws.onclose = () => {
+    scheduleReconnect();
+  };
+  ws.onerror = () => {
+    // onclose fires after onerror, reconnect handled there
+  };
+}
+
+function scheduleReconnect() {
+  if (reconnectTimer) return;
+  reconnectTimer = setTimeout(() => {
+    reconnectTimer = null;
+    connect();
+  }, 2000);
+}
+
+connect();
 
 export function pxResize(width, height) {
-  ws.send(
-    JSON.stringify({ width, height })
-  );
+  if (!ws || ws.readyState !== WebSocket.OPEN) {
+    pendingResize = { width, height };
+    if (!ws || ws.readyState === WebSocket.CLOSED) {
+      scheduleReconnect();
+    }
+    return;
+  }
+  ws.send(JSON.stringify({ width, height }));
 }
