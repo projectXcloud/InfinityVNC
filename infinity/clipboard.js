@@ -1,12 +1,17 @@
 /*
  * Bi-directional Clipboard Management
  * Copyright (C) 2024 ProjectX
+ *
+ * Syncs host clipboard to remote VNC session on user interaction.
+ * readText() requires user activation (click/keypress) — plain
+ * setInterval polling is denied by the browser without it.
  */
 
 import UI from "../app/ui.js";
 
-// This function writes the client clipboard
-// this is called in the ui.js inside clipboardReceive(e)
+let lastSentText = null;
+
+// Write text to the host system clipboard (remote → local direction)
 export function textAreaToClientClipboard(text) {
   if (typeof navigator.clipboard.writeText === "function") {
     navigator.clipboard.writeText(text).catch((err) => {
@@ -17,21 +22,29 @@ export function textAreaToClientClipboard(text) {
   }
 }
 
-function startClipboardInterval() {
-  setInterval(() => {
-    if (UI) {
-      UI.clipboardSend();
+// Called from ui.js clipboardReceive() to prevent echo-back
+export function updateLastSentText(text) {
+  lastSentText = text;
+}
+
+// Read host clipboard and send to remote if changed
+function syncClipboard() {
+  if (!UI) return;
+  if (typeof navigator.clipboard.readText !== "function") return;
+
+  navigator.clipboard.readText().then((text) => {
+    if (text !== lastSentText) {
+      lastSentText = text;
+      document.getElementById('noVNC_clipboard_text').value = text;
+      if (UI.rfb) {
+        UI.rfb.clipboardPasteFrom(text);
+      }
     }
-  }, 1000);
+  }).catch(() => {
+    // Clipboard API denied or no activation — silently ignore
+  });
 }
 
-function onUserInteraction() {
-  // Remove event listener after first interaction
-  document.removeEventListener("focus", onUserInteraction);
-
-  // Start the clipboard interval
-  startClipboardInterval();
-}
-
-// Add event listener to detect first user interaction
-document.addEventListener("focus", onUserInteraction);
+// User interactions provide the activation context that readText() requires
+document.addEventListener("click", syncClipboard);
+document.addEventListener("keydown", syncClipboard);

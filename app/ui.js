@@ -19,7 +19,7 @@ import keysyms from "../core/input/keysymdef.js";
 import Keyboard from "../core/input/keyboard.js";
 import RFB from "../core/rfb.js";
 import * as WebUtil from "./webutil.js";
-import { textAreaToClientClipboard } from '../infinity/clipboard.js';
+import { textAreaToClientClipboard, updateLastSentText } from '../infinity/clipboard.js';
 
 const PAGE_TITLE = "InfinityVNC";
 
@@ -996,6 +996,7 @@ const UI = {
         Log.Debug(">> UI.clipboardReceive: " + e.detail.text.substr(0, 40) + "...");
         document.getElementById('noVNC_clipboard_text').value = e.detail.text;
         textAreaToClientClipboard(e.detail.text);
+        updateLastSentText(e.detail.text);
         Log.Debug("<< UI.clipboardReceive");
     },
 
